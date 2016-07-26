@@ -27,6 +27,8 @@ def reloadSubModules(path, moduleName):
     """
     # TODO: Currently reloads all modules, should only reload those with changes.
     for dirPath, dirNames, fileNames in os.walk(path):
+        log('start of func: path is {}'.format(path))
+        log('start of func: fileNames are {}'.format(fileNames))
         for fileName in fileNames:
             if not fileName.endswith('.py'):
                 continue
@@ -50,9 +52,11 @@ def reloadSubModules(path, moduleName):
                     log(arg, c.siError)
 
         for dirName in dirNames:
+            log(dirNames)
+            log('inDirName: new path is {p}\{dn}'.format(p=path, dn=dirName))
+            log('inDirName: moduleName is {mn}.{dn}'.format(mn=moduleName, dn=dirName))
             reloadSubModules(path='{p}\{dn}'.format(p=path, dn=dirName),
                              moduleName='{mn}.{dn}'.format(mn=moduleName, dn=dirName))
-        # we need to break here otherwise we reload cmivfx.__init__ again... not sure why??
         break
 
 
