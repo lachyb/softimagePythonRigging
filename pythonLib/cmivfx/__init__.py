@@ -26,7 +26,7 @@ def reloadSubModules(path, moduleName):
     string contents before last '/'.
     """
     # TODO: Currently reloads all modules, should only reload those with changes.
-    for dirPaths, dirNames, fileNames in os.walk(path):
+    for dirPath, dirNames, fileNames in os.walk(path):
         for fileName in fileNames:
             if not fileName.endswith('.py'):
                 continue
@@ -50,8 +50,10 @@ def reloadSubModules(path, moduleName):
                     log(arg, c.siError)
 
         for dirName in dirNames:
-            reloadSubModules(path='{p}/{dn}'.format(p=path, dn=dirName),
+            reloadSubModules(path='{p}\{dn}'.format(p=path, dn=dirName),
                              moduleName='{mn}.{dn}'.format(mn=moduleName, dn=dirName))
+        # we need to break here otherwise we reload cmivfx.__init__ again... not sure why??
+        break
 
 
 
