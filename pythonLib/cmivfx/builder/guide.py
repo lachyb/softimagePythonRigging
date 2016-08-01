@@ -1,8 +1,9 @@
-"""
-Guide Module
-"""
-
 from cmivfx import log, c
+
+"""
+Guide module. Currently very basic - checks your guide model has the appropriate components,
+and initialises default name and colour parameters.
+"""
 
 class Guide(object):
 
@@ -20,7 +21,6 @@ class Guide(object):
 
     def isValid(self, model):
         """Check that required elements of model exist."""
-
         if not model.Type == '#model':
             log('Guide is not of type "model"', c.siError)
             return False
@@ -38,6 +38,7 @@ class Guide(object):
         return True
 
     def initFromModel(self):
+        """"Store values specified by user in model into self.settings"""
         for param in self.settingsProperty.Parameters:
             self.settings[param.ScriptName] = param.Value
 
