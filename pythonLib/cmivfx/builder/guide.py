@@ -1,10 +1,10 @@
 from cmivfx import log, c
 
+
 """
 Guide module. Currently very basic - checks your guide model has the appropriate components,
 and initialises default name and colour parameters.
 """
-
 class Guide(object):
 
     def __init__(self, model):
@@ -12,7 +12,7 @@ class Guide(object):
         self.settings = {'Name': 'unknown',
                          'colour_R': '0, 0, 1', 'colour_M': ',75, .25, .75', 'colour_L': '1, 0, 0'}
 
-        # we instantiate these once we know if the model is valid
+        # We instantiate these once we know if the model is valid
         self.settingsProperty = None
         self.componentsOrg = None
 
@@ -45,3 +45,57 @@ class Guide(object):
         self.settings['colour_R'] = [float(s) for s in self.settings['colour_R'].split(', ')]
         self.settings['colour_M'] = [float(s) for s in self.settings['colour_M'].split(', ')]
         self.settings['colour_L'] = [float(s) for s in self.settings['colour_L'].split(', ')]
+
+        for property_ in self.componentsOrg.Properties:
+            if not property_.Name.startswith('settings'):
+                continue
+
+            type_ = property_.Parameters('Type_').Value
+            name = property_.Parameters('Name').Value
+            location = property_.Parameters('Location').Value
+
+            log('init component: name = {}_{}, type_ = {}'.format(name, location, type_))
+
+            moduleName = type_.lower()
+            log('module name is {}'.format(moduleName))
+            module = __import__('cmivfx.components.{}'.format(moduleName), globals(), locals(), ['object'], -1)
+            log('module is {}'.format(module))
+            GuideClass = getattr(module, '{}Guide'.format(type_))
+
+            guide = GuideClass(property_)
+
+
+"""
+Initialises component properties
+"""
+class ComponentGuide(object):
+
+    # global variable for storing name of component. Overriden by child classes.
+    manipulatorNames = []
+
+    def __init__(self, property_):
+        self.property = property_
+        self.model = self.property.model
+
+        self.type_ = self.property.Parameters('Type_').Value
+        self.name = self.property.Parameters('Name').Value
+        self.location = self.property.Parameters('Location').Value
+
+        # store each param's scriptName and Value as key/value pairs
+        self.settings = {}
+        for param in self.property.Parameters:
+            self.settings[param.ScriptName] = param.Value
+
+        self.pos = {}
+        self.tfm = {}
+        self.apos = []
+        self.atfm = []
+
+        for manipulatorName in self.manipulatorNames:
+            manipulator = self.model.FindChild(self.getManipulatorName(manipulatorName))
+            log('The manipulator is {}'.format(manipulator))
+
+    def getManipulatorName(self, name):
+        """"Helper method to return full name of manipulator in scene."""
+        return 'Gde_{}_{}_{}'.format(self.name, self.location, name)
+
