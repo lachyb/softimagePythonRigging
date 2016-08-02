@@ -1,16 +1,18 @@
 from cmivfx import log, c
 
-
 """
 Guide module. Currently very basic - checks your guide model has the appropriate components,
 and initialises default name and colour parameters.
 """
+
 class Guide(object):
 
     def __init__(self, model):
         self.model = model
         self.settings = {'Name': 'unknown',
                          'colour_R': '0, 0, 1', 'colour_M': ',75, .25, .75', 'colour_L': '1, 0, 0'}
+
+        self.components = {}
 
         # We instantiate these once we know if the model is valid
         self.settingsProperty = None
@@ -51,25 +53,22 @@ class Guide(object):
                 continue
 
             type_ = property_.Parameters('Type_').Value
-            name = property_.Parameters('Name').Value
-            location = property_.Parameters('Location').Value
+            name = property_.Parameters('Name_').Value
+            location = property_.Parameters('Location').Value # L, R, M
 
             log('init component: name = {}_{}, type_ = {}'.format(name, location, type_))
 
             moduleName = type_.lower()
-            log('module name is {}'.format(moduleName))
             module = __import__('cmivfx.components.{}'.format(moduleName), globals(), locals(), ['object'], -1)
-            log('module is {}'.format(module))
             GuideClass = getattr(module, '{}Guide'.format(type_))
 
             guide = GuideClass(property_)
 
+            self.components['{}_{}'.format(name, location)] = guide
 
-"""
-Initialises component properties
-"""
+
 class ComponentGuide(object):
-
+    """Initialises component properties."""
     # global variable for storing name of component. Overriden by child classes.
     manipulatorNames = []
 
@@ -78,7 +77,7 @@ class ComponentGuide(object):
         self.model = self.property.model
 
         self.type_ = self.property.Parameters('Type_').Value
-        self.name = self.property.Parameters('Name').Value
+        self.name = self.property.Parameters('Name_').Value
         self.location = self.property.Parameters('Location').Value
 
         # store each param's scriptName and Value as key/value pairs
@@ -93,7 +92,17 @@ class ComponentGuide(object):
 
         for manipulatorName in self.manipulatorNames:
             manipulator = self.model.FindChild(self.getManipulatorName(manipulatorName))
-            log('The manipulator is {}'.format(manipulator))
+            assert manipulator, 'Missing manipulator: {}'.format(self.getManipulatorName(manipulatorName))
+            self.saveManipulatorTransform(manipulator, manipulatorName)
+
+    def saveManipulatorTransform(self, manipulator, manipulatorName):
+        tfm = manipulator.Kinematics.Global.Transform
+        tfm.SetScalingFromValues(1, 1, 1)
+
+        self.pos[manipulatorName] = tfm.Translation
+        self.tfm[manipulatorName] = tfm
+        self.apos.append(tfm.Translation)
+        self.atfm.append(tfm)
 
     def getManipulatorName(self, name):
         """"Helper method to return full name of manipulator in scene."""

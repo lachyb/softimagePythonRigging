@@ -2,12 +2,13 @@ from cmivfx import xsi, log
 from datetime import datetime
 
 
-"""
-Builder takes guide model and create a 'rig' model from the parameters specified in the guide.
-Rig model contains all rig elements - components, groups, geometry etc.
-Builder needs to be instantiated with instance of guide module.
-"""
 class Builder(object):
+
+    """
+    Builder takes guide model and creates a 'rig' model from the parameters specified in the guide.
+    Rig model contains all rig elements - components, groups, geometry etc.
+    Builder needs to be instantiated with instance of guide module.
+    """
 
     def __init__(self, guide):
         self.guide = guide
@@ -45,4 +46,21 @@ class Builder(object):
         self.geometryOrg = self.model.AddNull('geometry_org')
         self.hiddenGrp.AddMember(self.deformersOrg)
         self.hiddenGrp.AddMember(self.geometryOrg)
+
+    def initComponents(self):
+        for key, guide in self.guide.components.items():
+            type_ = guide.type_
+            log('init component builder: {} ({})'.format(key, type_))
+
+            moduleName = type_.lower()
+            module = __import__('cmivfx.builder.components.{}'.format(moduleName), globals(), locals(), ['object'], -1)
+            ComponentClass = getattr(module, type_)
+
+            component = ComponentClass(self, guide)
+            self.components[key] = component
+
+    def buildComponents(self):
+        for i in range(5):
+            for key, component in self.components.items():
+                component.build[i]
 
