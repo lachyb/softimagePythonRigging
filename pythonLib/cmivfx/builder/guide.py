@@ -40,7 +40,10 @@ class Guide(object):
         return True
 
     def initFromModel(self):
-        """"Store values specified by user in model into self.settings"""
+        """
+        Stores values specified by user in model into self.settings.
+        Stores all specified component properties into dictionary as components.
+        """
         for param in self.settingsProperty.Parameters:
             self.settings[param.ScriptName] = param.Value
 
@@ -48,12 +51,14 @@ class Guide(object):
         self.settings['colour_M'] = [float(s) for s in self.settings['colour_M'].split(', ')]
         self.settings['colour_L'] = [float(s) for s in self.settings['colour_L'].split(', ')]
 
+        # For each property (custom param set) underneath the componentsOrg null, store the values given
+        # in the property as a component - adding it to the components dictionary
         for property_ in self.componentsOrg.Properties:
             if not property_.Name.startswith('settings'):
                 continue
 
-            type_ = property_.Parameters('Type_').Value
-            name = property_.Parameters('Name_').Value
+            type_ = property_.Parameters('Type_').Value # component type, i.e. arm, godnode
+            name = property_.Parameters('Name_').Value # arbitrary name of component
             location = property_.Parameters('Location').Value # L, R, M
 
             log('init component: name = {}_{}, type_ = {}'.format(name, location, type_))
@@ -62,13 +67,18 @@ class Guide(object):
             module = __import__('cmivfx.components.{}'.format(moduleName), globals(), locals(), ['object'], -1)
             GuideClass = getattr(module, '{}Guide'.format(type_))
 
+            # I'm not sure wtf is happening here - GodnodeGuide([type_, name, location])? dafuq?
             guide = GuideClass(property_)
 
+            # setting value of component name + location to be instance of
             self.components['{}_{}'.format(name, location)] = guide
 
 
 class ComponentGuide(object):
-    """Initialises component properties."""
+    """
+    Parent Class for all component guides.
+    Initialises component properties.
+    """
     # global variable for storing name of component. Overriden by child classes.
     manipulatorNames = []
 

@@ -2,7 +2,7 @@ from cmivfx import xsi, log
 from datetime import datetime
 
 
-class Builder(object):
+class BuilderHooks(object):
 
     """
     Builder takes guide model and creates a 'rig' model from the parameters specified in the guide.
@@ -48,6 +48,10 @@ class Builder(object):
         self.hiddenGrp.AddMember(self.geometryOrg)
 
     def initComponents(self):
+        """
+        For each component, import its
+        @note: this is not run at all yet...
+        """
         for key, guide in self.guide.components.items():
             type_ = guide.type_
             log('init component builder: {} ({})'.format(key, type_))
@@ -57,10 +61,10 @@ class Builder(object):
             ComponentClass = getattr(module, type_)
 
             component = ComponentClass(self, guide)
-            self.components[key] = component
+            self.guide.components[key] = component
 
     def buildComponents(self):
         for i in range(5):
-            for key, component in self.components.items():
+            for key, component in self.guide.components.items():
                 component.build[i]
 

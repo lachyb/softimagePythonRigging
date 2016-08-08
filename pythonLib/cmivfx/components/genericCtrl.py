@@ -1,14 +1,17 @@
 from cmivfx import log
 from cmivfx.builder.guide import ComponentGuide
-from cmivfx.builder.component import Component
+from cmivfx.builder.componentHooks import ComponentHooks
 
+"""
+Godnode node component.
+"""
 
-class ControlGuide(ComponentGuide):
-    """Generic root (godnode) node component."""
+class GenericCtrlGuide(ComponentGuide):
 
     manipulatorNames = ['Root']
 
-class Control(Component):
+
+class GenericCtrlControl(ComponentHooks):
 
     def createObjects(self):
         log('Creating objects for Control')

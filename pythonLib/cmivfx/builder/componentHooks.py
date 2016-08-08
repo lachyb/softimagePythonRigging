@@ -1,9 +1,9 @@
 
 
-class Component(object):
+class ComponentHooks(object):
     """
-    Component Hooks. Outlines build sequence for components, grabbing required data first from the guide
-    inside __init__
+    Component Control Hooks. Outlines build sequence for components, grabbing
+    required data first from the guide inside __init__
     """
     def __init__(self, builder, guide):
 
