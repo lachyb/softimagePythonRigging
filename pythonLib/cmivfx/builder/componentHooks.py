@@ -12,9 +12,9 @@ class ComponentHooks(object):
         self.settings = self.guide.settings
         self.model = self.builder.model
 
-        self.hiddenGrp = self.builder.hidden_grp
+        self.hiddenGrp = self.builder.hiddenGrp
         self.unselectableGrp = self.builder.unselactableGrp
-        self.controllersGrp = self.builders.controllersGrp
+        self.controllersGrp = self.builder.controllersGrp
         self.deformersGrp = self.builder.deformersGrp
 
         self.deformersOrg = self.builder.deformersOrg

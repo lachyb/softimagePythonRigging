@@ -10,8 +10,11 @@ class Guide(object):
     def __init__(self, model):
         self.model = model
         self.settings = {'Name': 'unknown',
-                         'colour_R': '0, 0, 1', 'colour_M': ',75, .25, .75', 'colour_L': '1, 0, 0'}
+                         'colour_R': '0, 0, 1',
+                         'colour_M': ',75, .25, .75',
+                         'colour_L': '1, 0, 0'}
 
+        # dict of components guide found in the scene model
         self.components = {}
 
         # We instantiate these once we know if the model is valid
@@ -61,17 +64,14 @@ class Guide(object):
             name = property_.Parameters('Name_').Value # arbitrary name of component
             location = property_.Parameters('Location').Value # L, R, M
 
-            log('init component: name = {}_{}, type_ = {}'.format(name, location, type_))
+            log("init component guide: '{}_{}'. Component type is '{}'".format(name, location, type_))
 
             moduleName = type_.lower()
             module = __import__('cmivfx.components.{}'.format(moduleName), globals(), locals(), ['object'], -1)
             GuideClass = getattr(module, '{}Guide'.format(type_))
 
-            # I'm not sure wtf is happening here - GodnodeGuide([type_, name, location])? dafuq?
-            guide = GuideClass(property_)
-
-            # setting value of component name + location to be instance of
-            self.components['{}_{}'.format(name, location)] = guide
+            # setting value in dict of component name + location to be instance of component GuideClass
+            self.components['{}_{}'.format(name, location)] = GuideClass(property_)
 
 
 class ComponentGuide(object):

@@ -3,15 +3,15 @@ from cmivfx.builder.guide import ComponentGuide
 from cmivfx.builder.componentHooks import ComponentHooks
 
 """
-Godnode node component.
+Basic fk ctrl component.
 """
 
-class GenericCtrlGuide(ComponentGuide):
+class FkCtrlGuide(ComponentGuide):
 
     manipulatorNames = ['Root']
 
 
-class GenericCtrlControl(ComponentHooks):
+class FkCtrl(ComponentHooks):
 
     def createObjects(self):
         log('Creating objects for Control')

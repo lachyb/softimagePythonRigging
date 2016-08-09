@@ -13,6 +13,7 @@ class BuilderHooks(object):
     def __init__(self, guide):
         self.guide = guide
         self.settings = self.guide.settings
+        self.components = {} # dictionary of components to be built
 
     def build(self):
         """Master call for building rig elements. Logs completion time for convenience."""
@@ -20,6 +21,8 @@ class BuilderHooks(object):
 
         xsi.SetValue('preferences.scripting.cmdlog', False, '')
         self.buildInitialHierarchy()
+        self.initComponents()
+        self.buildComponents()
         xsi.SetValue('preferences.scripting.cmdlog', True, '')
 
         endTime = datetime.now()
@@ -49,22 +52,24 @@ class BuilderHooks(object):
 
     def initComponents(self):
         """
-        For each component, import its
-        @note: this is not run at all yet...
+        For each component collected by the guide, store the component build class in a dictionary.
         """
         for key, guide in self.guide.components.items():
-            type_ = guide.type_
-            log('init component builder: {} ({})'.format(key, type_))
+            type_ = guide.type_ # e.g. arm, godnode
+            log("init component builder: '{}'. Component type is '{}'".format(key, type_))
 
             moduleName = type_.lower()
-            module = __import__('cmivfx.builder.components.{}'.format(moduleName), globals(), locals(), ['object'], -1)
-            ComponentClass = getattr(module, type_)
+            module = __import__('cmivfx.components.{}'.format(moduleName), globals(), locals(), ['object'], -1)
+            ComponentClass = getattr(module, type_) # e.g. cmivfx.components.fkctrl.FkCtrl
 
-            component = ComponentClass(self, guide)
-            self.guide.components[key] = component
+            self.components[key] = ComponentClass(self, guide)
 
     def buildComponents(self):
+        """
+        Execute each hook for each component in succession - createObjects() for all components,
+        then createParameters() for all components etc.
+        """
         for i in range(5):
-            for key, component in self.guide.components.items():
-                component.build[i]
+            for key, component in self.components.items():
+                component.build[i]()
 
