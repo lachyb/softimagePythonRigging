@@ -66,6 +66,9 @@ class Guide(object):
 
             log("init component guide: '{}_{}'. Component type is '{}'".format(name, location, type_))
 
+            # TODO: Module name has to be lower case, which is annoying. Do something so this isn't a bother.
+            # Animal has component in package called <componentName> (e.g. fkCtrl), with a file
+            # named 'component.py' underneath.
             moduleName = type_.lower()
             module = __import__('cmivfx.components.{}'.format(moduleName), globals(), locals(), ['object'], -1)
             GuideClass = getattr(module, '{}Guide'.format(type_))
@@ -101,9 +104,21 @@ class ComponentGuide(object):
         self.atfm = []
 
         for manipulatorName in self.manipulatorNames:
-            manipulator = self.model.FindChild(self.getManipulatorName(manipulatorName))
-            assert manipulator, 'Missing manipulator: {}'.format(self.getManipulatorName(manipulatorName))
-            self.saveManipulatorTransform(manipulator, manipulatorName)
+
+            if '#' in manipulatorName:
+                i = 0
+                while True:
+                    localName = manipulatorName.replace('#', str(i))
+                    manipulator = self.model.FindChild(self.getManipulatorName(manipulatorName))
+                    if manipulator is None:
+                        break
+                    self.saveManipulatorTransform(manipulator, manipulatorName)
+                    i+=1
+
+            else:
+                manipulator = self.model.FindChild(self.getManipulatorName(manipulatorName))
+                assert manipulator, 'Missing manipulator: {}'.format(self.getManipulatorName(manipulatorName))
+                self.saveManipulatorTransform(manipulator, manipulatorName)
 
     def saveManipulatorTransform(self, manipulator, manipulatorName):
         tfm = manipulator.Kinematics.Global.Transform

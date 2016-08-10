@@ -3,32 +3,32 @@ from cmivfx.builder.guide import ComponentGuide
 from cmivfx.builder.componentHooks import ComponentHooks
 
 """
-Basic fk ctrl component.
+Creates a chain of fk controls of arbitrary length
 """
 
-class FkCtrlGuide(ComponentGuide):
+class FkChainGuide(ComponentGuide):
 
-    manipulatorNames = ['Root']
+    manipulatorNames = ['#']
 
 
-class FkCtrl(ComponentHooks):
+class FkChain(ComponentHooks):
 
     def createObjects(self):
-        log('Creating objects for FkCtrl')
+        log('Creating objects for FkChain')
         pass
 
     def createParameters(self):
-        log('Creating Parameters for FkCtrl')
+        log('Creating Parameters for FkChain')
         pass
 
     def createOperators(self):
-        log('Creating Operators for FkCtrl')
+        log('Creating Operators for FkChain')
         pass
 
     def createSlots(self):
-        log('Creating Slots for FkCtrl')
+        log('Creating Slots for FkChain')
         pass
 
     def createConnection(self):
-        log('Creating Connection for FkCtrl')
+        log('Creating Connection for FkChain')
         pass
