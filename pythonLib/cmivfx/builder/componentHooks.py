@@ -65,8 +65,8 @@ class ComponentHooks(object):
         :return	The newly created null
         """
 
-        # TODO: keep refactorying dickheads missing code, why couldn't this be included in tutorial...
-        ctrl = primitives.addNull(parent, self.getName(name + "_ctl"), tfm, size, colour, primaryIcon,
+        # TODO: keep refactorying dickheads missing code, why couldn't this be included in tutorial. Write getName
+        ctrl = primitives.addNull(parent, self.getName(name + '_ctl'), tfm, size, colour, primaryIcon,
                                   shadowIcon, shdOffX, shdOffY, shdOffZ, shdSclX, shdSclY, shdSclZ)
         self.controllersGrp.AddMember(ctrl)
         return ctrl
