@@ -1,4 +1,4 @@
-from cmivfx import log, c
+from cmivfx import log, siLog, c
 
 """
 Guide module. Currently very basic - checks your guide model has the appropriate components,
@@ -27,17 +27,17 @@ class Guide(object):
     def isValid(self, model):
         """Check that required elements of model exist."""
         if not model.Type == '#model':
-            log('Guide is not of type "model"', c.siError)
+            siLog.error('Guide is not of type "model"')
             return False
 
         self.settingsProperty = self.model.Properties('Settings')
         if not self.settingsProperty:
-            log('Guide missing "Settings" property', c.siError)
+            siLog.error('Guide missing "Settings" property')
             return False
 
         self.componentsOrg = self.model.FindChild('component_org')
         if not self.componentsOrg:
-            log('Guide missing "component_org" null', c.siError)
+            siLog.error('Guide missing "component_org" null')
             return False
 
         return True
@@ -64,7 +64,7 @@ class Guide(object):
             name = property_.Parameters('Name_').Value # arbitrary name of component
             location = property_.Parameters('Location').Value # L, R, M
 
-            log("init component guide: '{}_{}'. Component type is '{}'".format(name, location, type_))
+            siLog.info("init component guide: '{}_{}'. Component type is '{}'".format(name, location, type_))
 
             # TODO: Module name has to be lower case, which is annoying. Do something so this isn't a bother.
             # Animal has component in package called <componentName> (e.g. fkCtrl), with a file
@@ -109,12 +109,11 @@ class ComponentGuide(object):
                 i = 0
                 while True:
                     localName = manipulatorName.replace('#', str(i))
-                    manipulator = self.model.FindChild(self.getManipulatorName(manipulatorName))
+                    manipulator = self.model.FindChild(self.getManipulatorName(localName))
                     if manipulator is None:
                         break
-                    self.saveManipulatorTransform(manipulator, manipulatorName)
+                    self.saveManipulatorTransform(manipulator, localName)
                     i+=1
-
             else:
                 manipulator = self.model.FindChild(self.getManipulatorName(manipulatorName))
                 assert manipulator, 'Missing manipulator: {}'.format(self.getManipulatorName(manipulatorName))

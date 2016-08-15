@@ -1,4 +1,4 @@
-from cmivfx import log
+from cmivfx import siLog
 from cmivfx.builder.guide import ComponentGuide
 from cmivfx.builder.componentHooks import ComponentHooks
 
@@ -14,21 +14,21 @@ class FkCtrlGuide(ComponentGuide):
 class FkCtrl(ComponentHooks):
 
     def createObjects(self):
-        log('Creating objects for FkCtrl')
+        siLog.info('Creating objects for FkCtrl')
         pass
 
     def createParameters(self):
-        log('Creating Parameters for FkCtrl')
+        siLog.info('Creating Parameters for FkCtrl')
         pass
 
     def createOperators(self):
-        log('Creating Operators for FkCtrl')
+        siLog.info('Creating Operators for FkCtrl')
         pass
 
     def createSlots(self):
-        log('Creating Slots for FkCtrl')
+        siLog.info('Creating Slots for FkCtrl')
         pass
 
     def createConnection(self):
-        log('Creating Connection for FkCtrl')
+        siLog.info('Creating Connection for FkCtrl')
         pass

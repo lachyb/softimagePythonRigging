@@ -5,15 +5,13 @@ in the project directory.
 
 from win32com.client import Dispatch
 from win32com.client import constants as c
+from cmivfx import siLog
 import os
 
 # gives us easy access to XSI API
 xsi = Dispatch('XSI.Application').Application
 xsiMath = Dispatch('XSI.Math')
 xsiFactory = Dispatch('XSI.Factory')
-
-# shorthand for calling LogMessage
-log = xsi.LogMessage
 
 def _reload():
     reloadSubModules(__path__[0], 'cmivfx')
@@ -36,18 +34,18 @@ def reloadSubModules(path, moduleName):
             else:
                 subModuleName = moduleName + '.' + fileName[:-3] # eg cmivfx.subModule
 
-            log('reloading {}'.format(subModuleName))
+            siLog.info('reloading {}'.format(subModuleName))
             try:
                 module = __import__(subModuleName, globals(), locals(), ['*'], -1)
                 reload(module)
 
             except ImportError as e:
                 for arg in e.args:
-                    log(arg, c.siError)
+                    siLog.error(arg)
 
             except Exception as e:
                 for arg in e.args:
-                    log(arg, c.siError)
+                    siLog.error(arg)
 
         for dirName in dirNames:
             reloadSubModules(path='{p}\{dn}'.format(p=path, dn=dirName),

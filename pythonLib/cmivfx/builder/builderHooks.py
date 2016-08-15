@@ -1,4 +1,4 @@
-from cmivfx import xsi, log
+from cmivfx import xsi, siLog
 from datetime import datetime
 
 
@@ -26,7 +26,7 @@ class BuilderHooks(object):
         xsi.SetValue('preferences.scripting.cmdlog', True, '')
 
         endTime = datetime.now()
-        log('Build completed in: {}'.format(endTime - startTime))
+        siLog.info('Build completed in: {}'.format(endTime - startTime))
 
     def buildInitialHierarchy(self):
         """"Creates default rig model hierarchy for organising rig components."""
@@ -56,7 +56,7 @@ class BuilderHooks(object):
         """
         for key, guide in self.guide.components.items():
             type_ = guide.type_ # e.g. arm, godnode
-            log("init component builder: '{}'. Component type is '{}'".format(key, type_))
+            siLog.info("init component builder: '{}'. Component type is '{}'".format(key, type_))
 
             moduleName = type_.lower()
             module = __import__('cmivfx.components.{}'.format(moduleName), globals(), locals(), ['object'], -1)
