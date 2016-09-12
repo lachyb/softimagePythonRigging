@@ -7,7 +7,7 @@ class BuilderHooks(object):
     """
     Builder takes guide model and creates a 'rig' model from the parameters specified in the guide.
     Rig model contains all rig elements - components, groups, geometry etc.
-    Builder needs to be instantiated with instance of guide module.
+    Builder needs to be instantiated with instance of guide module - eg build = BuilderHooks(guideInstance)
     """
 
     def __init__(self, guide):

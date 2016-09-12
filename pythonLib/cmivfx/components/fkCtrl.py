@@ -30,5 +30,5 @@ class FkCtrl(ComponentHooks):
         pass
 
     def createConnection(self):
-        siLog.info('Creating Connection for FkCtrl')
+        siLog.info('Creating Connections for FkCtrl')
         pass

@@ -1,4 +1,4 @@
-from cmivfx import primitives 
+from cmivfx import primitives, xsiMath
 
 class ComponentHooks(object):
     """
@@ -64,9 +64,25 @@ class ComponentHooks(object):
         :param shdSclZ float. Null shadow offset scaling Z
         :return	The newly created null
         """
-
-        # TODO: keep refactorying dickheads missing code, why couldn't this be included in tutorial. Write getName
         ctrl = primitives.addNull(parent, self.getName(name + '_ctl'), tfm, size, colour, primaryIcon,
                                   shadowIcon, shdOffX, shdOffY, shdOffZ, shdSclX, shdSclY, shdSclZ)
         self.controllersGrp.AddMember(ctrl)
         return ctrl
+
+    def addNull(self, parent, name, tfm=xsiMath.CreateTransform()):
+        """
+        Creates a null
+        :param parent. si3dobject. parent object
+        :param name. string. Local name of the controller
+        :param tfm. siTransformation. Global transform of the null
+        :return	null. The newly created null
+        """
+        null = primitives.addNull(parent, self.getName(name), tfm)
+        self.hiddenGrp.AddMember(null)
+
+        return null
+
+    def getName(self, name):
+        """Returns the fullname of an object to make sure each object has a unique name."""
+        # NOTE: self.name is the name of the object in the guide
+        return '{guideName}_{l}_{objName}'.format(guideName=self.name, l=self.location, objName=name)

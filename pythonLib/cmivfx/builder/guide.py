@@ -1,4 +1,4 @@
-from cmivfx import log, siLog, c
+from cmivfx import siLog, c
 
 """
 Guide module. Currently very basic - checks your guide model has the appropriate components,

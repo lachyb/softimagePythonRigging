@@ -1,6 +1,7 @@
 from cmivfx import siLog
 from cmivfx.builder.guide import ComponentGuide
 from cmivfx.builder.componentHooks import ComponentHooks
+from cmivfx import math3d
 
 """
 Creates a chain of fk controls of arbitrary length
@@ -19,8 +20,10 @@ class FkChain(ComponentHooks):
         parent = self.model
         for i, position in enumerate(self.guide.apos[:-1]):
             nextPostion = self.guide.apos[i + 1]
+            distance = math3d.getDistance(position, nextPostion)
+
             ctrl = self.addCtrl(parent, str(i), self.guide.atfm[i], primaryIcon=0, shadowIcon=4,
-                                shdSclX=1, shdSclY=.25, shdSclZ=.25, shdOffX=.5)
+                                shdSclX=distance, shdSclY=.25, shdSclZ=.25, shdOffX=distance*.5)
             parent = ctrl
 
     def createParameters(self):
@@ -36,5 +39,5 @@ class FkChain(ComponentHooks):
         pass
 
     def createConnection(self):
-        siLog.info('Creating Connection for FkChain')
+        siLog.info('Creating Connections for FkChain')
         pass
