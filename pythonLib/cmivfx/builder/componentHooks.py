@@ -21,6 +21,7 @@ class ComponentHooks(object):
 
         self.name = self.guide.name
         self.location = self.guide.location
+        self.negative = self.location == 'R'
 
         # the five stages of a components build process. Like rigHooks I guess, createsObjects
         # for ALL components, then createsParameters for ALL components etc etc
@@ -69,20 +70,28 @@ class ComponentHooks(object):
         self.controllersGrp.AddMember(ctrl)
         return ctrl
 
-    def addNull(self, parent, name, tfm=xsiMath.CreateTransform()):
-        """
-        Creates a null
-        :param parent. si3dobject. parent object
-        :param name. string. Local name of the controller
-        :param tfm. siTransformation. Global transform of the null
-        :return	null. The newly created null
-        """
-        null = primitives.addNull(parent, self.getName(name), tfm)
-        self.hiddenGrp.AddMember(null)
-
-        return null
+    # def addNull(self, parent, name, tfm=xsiMath.CreateTransform()):
+    #     """
+    #     Creates a null
+    #     :param parent. si3dobject. parent object
+    #     :param name. string. Local name of the controller
+    #     :param tfm. siTransformation. Global transform of the null
+    #     :return	null. The newly created null
+    #     """
+    #     null = primitives.addNull(parent, self.getName(name), tfm)
+    #     self.hiddenGrp.AddMember(null)
+    #
+    #     return null
 
     def getName(self, name):
         """Returns the fullname of an object to make sure each object has a unique name."""
         # NOTE: self.name is the name of the object in the guide
         return '{guideName}_{l}_{objName}'.format(guideName=self.name, l=self.location, objName=name)
+
+    def addDeformer(self, parent, localName):
+        transform = parent.Kinematics.Global.Transform
+        deformer = primitives.addNull(self.deformersOrg, self.getName('{}_dfmr'.format(localName)),
+                                      transform, colour=[0, 1, 0], size=.25, primaryIcon=4, visible=False)
+        deformer.Kinematics.AddConstraint('Pose', parent, False)
+        self.deformersGrp.AddMember(deformer)
+        return deformer

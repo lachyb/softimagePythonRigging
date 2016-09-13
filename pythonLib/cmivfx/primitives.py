@@ -2,12 +2,12 @@
 Collection of curve tools
 """
 
-from cmivfx import c, xsi, xsiMath
+from cmivfx import c, xsi, xsiMath, siLog
 
 
 def addNull(parent, name, tfm=xsiMath.CreateTransform(), size=1, colour=[0, 0, 0],
             primaryIcon=None, shadowIcon=None, shdOffX=None, shdOffY=None, shdOffZ=None,
-            shdSclX=None, shdSclY=None, shdSclZ=None):
+            shdSclX=None, shdSclY=None, shdSclZ=None, visible=False):
     """
     Create a null with a given transform, size, color and display
     :param parent: x3dobject, parent object
@@ -37,6 +37,9 @@ def addNull(parent, name, tfm=xsiMath.CreateTransform(), size=1, colour=[0, 0, 0
 
     keys = params.keys()
     keys.sort()
+
+    # TODO: Fucking toggling the fucking vis isnt fucking working and I don't know why FUCK
+    # null.Visibility.viewvis = visible
     for key in keys:
         if params[key] is not None:
             null.ActivePrimitive.Parameters(key).Value = params[key]
